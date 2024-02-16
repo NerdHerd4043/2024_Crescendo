@@ -15,6 +15,7 @@ import frc.robot.commands.RunIntake;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.armCommands.MoveArm;
 import frc.robot.commands.auto.TestTriPID;
+import frc.robot.commands.autoCommands.PathPlannerTest;
 import frc.robot.commands.autoCommands.TimeDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
@@ -23,9 +24,11 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ProfPIDArm;
 import frc.robot.subsystems.Shooter;
 
+import java.util.ArrayList;
 import java.util.function.DoubleSupplier;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.networktables.NetworkTable;
@@ -77,6 +80,9 @@ public class RobotContainer {
 
   private final TimeDrive timeDrive = new TimeDrive(drivebase, gyro, 0.2, 0, 5);
   private final TestTriPID testAuto = new TestTriPID(drivebase, intake, filteredXPose, filteredYPose, filteredAnlge);
+
+  ArrayList<PathPlannerTrajectory> autoPaths = null;
+  
 
   private static CommandXboxController driveStick = new CommandXboxController(0);
 
