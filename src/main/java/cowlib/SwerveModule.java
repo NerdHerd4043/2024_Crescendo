@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.DriveConstants;
@@ -24,6 +25,8 @@ public class SwerveModule {
   private boolean inverted;
   private double maxVelocity;
   private double maxVoltage;
+  private SwerveModulePosition currentPosition;
+  private SwerveModuleState currentState;
 
   public SwerveModule(int angleMotorId, int speedMotorId, int encoderId, boolean driveInverted,
       double maxVelocity, double maxVoltage) {
@@ -34,6 +37,8 @@ public class SwerveModule {
     this.inverted = driveInverted;
     this.maxVelocity = maxVelocity;
     this.maxVoltage = maxVoltage;
+    currentPosition = new SwerveModulePosition();
+    currentState = new SwerveModuleState();
 
     this.pidController.enableContinuousInput(-180, 180);
   }
@@ -67,5 +72,19 @@ public class SwerveModule {
 
   public double getEncoderRadians() {
     return Units.degreesToRadians(getEncoder());
+  }
+
+  public SwerveModulePosition getPosition() {
+    return currentPosition;
+  }
+
+  public SwerveModuleState getState() {
+    return currentState;
+  }
+
+  public void setTargetState(SwerveModuleState targetState) {
+    // Optimize the state
+    currentState = SwerveModuleState.optimize(targetState, currentState.angle);
+    currentPosition = new SwerveModulePosition(currentPosition.distanceMeters + (currentState.speedMetersPerSecond * 0.02), currentState.angle);
   }
 }
