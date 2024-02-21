@@ -15,7 +15,6 @@ import frc.robot.commands.RunIntake;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.armCommands.MoveArm;
 import frc.robot.commands.auto.TestTriPID;
-import frc.robot.commands.autoCommands.PathPlannerTest;
 import frc.robot.commands.autoCommands.TimeDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
@@ -28,7 +27,8 @@ import java.util.ArrayList;
 import java.util.function.DoubleSupplier;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.networktables.NetworkTable;
@@ -80,21 +80,24 @@ public class RobotContainer {
 
   private final TimeDrive timeDrive = new TimeDrive(drivebase, gyro, 0.2, 0, 5);
   private final TestTriPID testAuto = new TestTriPID(drivebase, intake, filteredXPose, filteredYPose, filteredAnlge);
-
-  ArrayList<PathPlannerTrajectory> autoPaths = null;
   
-
   private static CommandXboxController driveStick = new CommandXboxController(0);
 
   SendableChooser<Command> commandChooser = new SendableChooser<>();
+  private final SendableChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    NamedCommands.registerCommand("Intake", new RunIntake(intake, IntakeConstants.intakeSpeed, -IntakeConstants.kickupSpeed));
+
     commandChooser.addOption("Timed drive", timeDrive);
     commandChooser.addOption("AprilTag Auto Test", testAuto);
     SmartDashboard.putData(commandChooser);
+
+    autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+    SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Configure the trigger bindings
     drivebase.setDefaultCommand(
@@ -194,6 +197,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return commandChooser.getSelected();
+    return autoChooser.getSelected();
   }
 }

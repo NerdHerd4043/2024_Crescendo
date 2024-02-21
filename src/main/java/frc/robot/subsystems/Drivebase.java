@@ -8,6 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import cowlib.SwerveModule;
@@ -19,11 +20,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PathPlannerConstants;
 import frc.robot.Constants.PathPlannerConstants.*;
-import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants.ModuleLocations;
 import frc.robot.Constants.DriveConstants.SwerveModules;
 
@@ -53,13 +54,15 @@ public class Drivebase extends SubsystemBase {
     
   private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, gyro.getRotation2d(), getPositions());
 
+  private Field2d field = new Field2d();
+
   /** Creates a new Drivebase. */
   public Drivebase() {
     AutoBuilder.configureHolonomic(
       this::getPose, // Robot pose supplier
       this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
       this::getCurrentSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-      this::drive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+      this::discretizeDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
       new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
         new PIDConstants(TranslationPID.p, TranslationPID.i, TranslationPID.d), // Translation PID constants
         new PIDConstants(RotationPID.p, RotationPID.i, RotationPID.d), // Rotation PID constants
@@ -77,7 +80,10 @@ public class Drivebase extends SubsystemBase {
               }
               return false;
             },
-      this); // Reference to this subsystem to set requirements
+      this); // Reference to this subsystem to set requirements    
+      
+      PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
+      SmartDashboard.putData("Field", field); 
   }
 
   public void fieldOrientedDrive(double speedX, double speedY, double rot, double angle) {
@@ -88,6 +94,12 @@ public class Drivebase extends SubsystemBase {
   public void robotOrientedDrive(double speedX, double speedY, double rot) {
     ChassisSpeeds speeds = new ChassisSpeeds(speedX, speedY, rot);
     this.drive(speeds);
+  }
+
+  public void discretizeDrive(ChassisSpeeds robotRelativeSpeeds) {
+    ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+    SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
+    setStates(targetStates);
   }
 
   private void drive(ChassisSpeeds speeds) {
@@ -149,6 +161,9 @@ public class Drivebase extends SubsystemBase {
 
   @Override
   public void periodic() {
+    odometry.update(gyro.getRotation2d(), getPositions());
+    field.setRobotPose(getPose());
+
     // TODO: Sendables?
     //
     // This method will be called once per scheduler run
