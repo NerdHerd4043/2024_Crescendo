@@ -4,20 +4,26 @@
 
 package frc.robot.commands.autoCommands;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivebase;
 
 public class TimeDrive extends Command {
   private final Drivebase drivebase;
+  private final AHRS gyro;
   private final double speed;
+  private final double rotation;
   private final double delay;
-  private double startTime = 0;
+  private double startTime;
 
   /** Creates a new TimeDrive. */
-  public TimeDrive(Drivebase drivebase, double speed, double delay) {
+  public TimeDrive(Drivebase drivebase, AHRS gyro, double speed, double rotation, double delay) {
     this.drivebase = drivebase;
+    this.gyro = gyro;
     this.speed = speed;
+    this.rotation = rotation;
     this.delay = delay;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(this.drivebase);
@@ -32,7 +38,8 @@ public class TimeDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivebase.robotOrientedDrive(0, speed, 0);
+    drivebase.robotOrientedDrive(speed, 0, 0);
+    // drivebase.fieldOrientedDrive(speed, 0, rotation, -gyro.getYaw());
   }
 
   // Called once the command ends or is interrupted.
