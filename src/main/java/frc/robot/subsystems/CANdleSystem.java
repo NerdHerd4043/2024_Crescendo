@@ -99,7 +99,8 @@ public class CANdleSystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (toAnimate != null) {
+    // INFO: If problems occur, switch this back to toAnimate
+    if (currentAnimation != null) {
       candle.animate(toAnimate);
     } else {
       candle.setLEDs(r, g, b);
