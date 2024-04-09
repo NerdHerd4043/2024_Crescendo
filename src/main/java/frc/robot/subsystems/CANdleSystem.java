@@ -80,16 +80,10 @@ public class CANdleSystem extends SubsystemBase {
 
     if (currentAnimation != null) {
       toAnimate = switch (currentAnimation) {
-        case ColorFlow -> getColorFlowAnimation();
+        case ColorFlow -> new ColorFlowAnimation(128, 20, 70, 0, 0.7, CANdleConstants.ledCount, Direction.Forward, 8);
         case Flash -> new StrobeAnimation(255, 0, 0);
       };
     }
-  }
-
-  private ColorFlowAnimation getColorFlowAnimation() {
-    var animation = new ColorFlowAnimation(128, 20, 70, 0, 0.7, CANdleConstants.ledCount, Direction.Forward);
-    animation.setLedOffset(8);
-    return animation;
   }
 
   public void ledsOff() {
