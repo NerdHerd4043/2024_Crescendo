@@ -24,11 +24,20 @@ public class CANdleSystem extends SubsystemBase {
     Flash,
   }
 
-  private int r;
-  private int g;
-  private int b;
+  /*
+   * These three values store our solid color data in the event we lack an
+   * animation
+   */
+  private int r, g, b;
 
+  /*
+   * This variable is the enum representation of our currently selected
+   * annotation. It will be null if no animation is selected.
+   */
   private AnimationType currentAnimation;
+  /*
+   * This stores the actual animation object from the CANdle API
+   */
   private Animation toAnimate;
 
   /** Creates a new CANdle. */
