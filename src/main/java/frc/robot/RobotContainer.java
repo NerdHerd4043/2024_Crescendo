@@ -10,7 +10,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.Climb;
 import frc.robot.commands.Drive;
-import frc.robot.commands.Rumble;
+import frc.robot.commands.HIDCommands.Rumble;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.HIDCommands.ControlCANdle;
