@@ -61,7 +61,8 @@ public class RobotContainer {
 
   private static XboxController driveStick = new XboxController(0);
 
-  // private static CommandXboxController c_driveStick2 = new CommandXboxController(1);
+  // private static CommandXboxController c_driveStick2 = new
+  // CommandXboxController(1);
   private static CommandXboxController c_driveStick = new CommandXboxController(0);
 
   private SendableChooser<Command> autoChooser;
@@ -239,14 +240,14 @@ public class RobotContainer {
     // Intake
     c_driveStick.leftBumper().whileTrue(Commands.parallel(
         new RunIntake(intake, IntakeConstants.intakeSpeed, -IntakeConstants.kickupSpeed), // toggle intake on/off
-        new Rumble(driveStick, beamBreak, candle, () -> false))); // rumble controller if note is visible
+        new Rumble(driveStick, beamBreak, () -> false))); // rumble controller if note is visible
 
     // Charge Shooter
     c_driveStick.rightBumper()
         .whileTrue(Commands.parallel(
             new Shoot(shooter, ShooterConstants.shooterSpeed),
             new RunIntake(intake, 0.5, -IntakeConstants.kickupSpeed),
-            new Rumble(driveStick, beamBreak, candle, shooter::isReady))); // spin up flywheels while button is held
+            new Rumble(driveStick, beamBreak, shooter::isReady))); // spin up flywheels while button is held
 
     // Release Shooter
     c_driveStick.rightBumper().onFalse( // shoot note when button is released
@@ -255,7 +256,7 @@ public class RobotContainer {
                 Commands.parallel(
                     new Shoot(shooter, ShooterConstants.shooterSpeed),
                     new RunIntake(intake, 0.5, IntakeConstants.kickupSpeed),
-                    new Rumble(driveStick, beamBreak, candle, shooter::isReady)),
+                    new Rumble(driveStick, beamBreak, shooter::isReady)),
                 new WaitCommand(0.5))));
 
     // Set arm to podium angle
