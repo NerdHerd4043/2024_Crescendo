@@ -118,14 +118,12 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     drivebase.setDefaultCommand(
-        new Drive(
-            drivebase,
+        new Drive(drivebase,
             () -> getScaledXY(),
             () -> scaleRotationAxis(driveStick.getRightX())));
 
     arm.setDefaultCommand(
-        new MoveArm(
-            arm,
+        new MoveArm(arm,
             () -> getArmControl(driveStick.getRightTriggerAxis() -
                 driveStick.getLeftTriggerAxis())));
 
