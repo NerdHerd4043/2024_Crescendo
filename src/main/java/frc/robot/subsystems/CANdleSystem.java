@@ -4,8 +4,11 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANdleConstants;
+
+import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
@@ -82,6 +85,18 @@ public class CANdleSystem extends SubsystemBase {
 
   public void setFlashing() {
     changeAnimation(AnimationType.Flash);
+  }
+
+  public Command getDefaultCommand(BooleanSupplier shooterReady, BooleanSupplier hasNote) {
+    return this.run(() -> {
+      if (!hasNote.getAsBoolean()) {
+        this.setBlue();
+      } else if (shooterReady.getAsBoolean()) {
+        this.setGreen();
+      } else {
+        this.setOrange();
+      }
+    });
   }
 
   public void changeAnimation(AnimationType toChange) {
