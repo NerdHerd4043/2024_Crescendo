@@ -16,6 +16,7 @@ public class Rumble extends Command {
   private final DigitalInput beamBreak;
   private final BooleanSupplier shooterReady;
 
+  // TODO: Switch to BooleanSupplier instead of taking the beamBreak directly
   /** Creates a new Rumble. */
   public Rumble(XboxController driveStick, DigitalInput beamBreak, BooleanSupplier shooterReady) {
     this.driveStick = driveStick;
