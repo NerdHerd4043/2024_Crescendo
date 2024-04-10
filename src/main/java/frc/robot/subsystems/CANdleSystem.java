@@ -96,7 +96,7 @@ public class CANdleSystem extends SubsystemBase {
       } else {
         this.setOrange();
       }
-    });
+    }).ignoringDisable(true);
   }
 
   public void changeAnimation(AnimationType toChange) {
