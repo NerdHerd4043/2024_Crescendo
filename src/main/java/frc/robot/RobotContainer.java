@@ -75,46 +75,8 @@ public class RobotContainer {
   public RobotContainer() {
     SignalLogger.enableAutoLogging(false);
 
-    var shootComp = Commands.race(new Shoot(shooter, -0.95),
-        Commands.sequence(Commands.waitSeconds(0.55),
-            Commands.race(new RunIntake(intake, 0.5, IntakeConstants.kickupSpeed), Commands.waitSeconds(0.25))));
-
-    var armUp = Commands.sequence(
-        Commands.runOnce(arm::armUp, arm),
-        Commands.waitSeconds(0.75));
-
-    // var armDown = Commands.race(
-    // new MoveArm(arm, () -> ArmConstants.lowerArmSpeed),
-    // Commands.waitSeconds(1.5));
-
-    var armDown = Commands.runOnce(arm::armDown, arm);
-
-    var ampShoot = Commands.race(
-        Commands.parallel(
-            new Shoot(shooter, ShooterConstants.shooterSpeed),
-            new RunIntake(intake, 0.5, IntakeConstants.kickupSpeed)),
-        Commands.waitSeconds(0.4));
-
-    var defenceShoot = Commands.parallel(
-        new Shoot(shooter, -0.15),
-        new RunIntake(intake, 0.5, IntakeConstants.kickupSpeed));
-
-    var stopDefence = Commands.parallel(
-        new Shoot(shooter, 0),
-        new RunIntake(intake, 0, 0));
-
-    NamedCommands.registerCommand("Intake",
-        new RunIntake(intake, IntakeConstants.intakeSpeed, -IntakeConstants.kickupSpeed));
-    NamedCommands.registerCommand("Stop Intake",
-        new RunIntake(intake, 0, 0));
-    NamedCommands.registerCommand("Shoot", shootComp);
-    NamedCommands.registerCommand("Amp Score", Commands.sequence(armUp, ampShoot,
-        armDown));
-    NamedCommands.registerCommand("Defence Shoot", defenceShoot);
-    NamedCommands.registerCommand("Stop Defence Shoot", stopDefence);
-
-    autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
-    SmartDashboard.putData("Auto Mode", autoChooser);
+    configureNamedCommands();
+    SmartDashboard.putData("Auto Mode", AutoBuilder.buildAutoChooser());
 
     // Configure the trigger bindings
     drivebase.setDefaultCommand(
@@ -276,6 +238,46 @@ public class RobotContainer {
     // Codriver climb controls
     // c_driveStick2.y().whileTrue(new Climb(climber, 1));
     // c_driveStick2.a().whileTrue(new Climb(climber, -1));
+  }
+
+  private void configureNamedCommands() {
+    var shootComp = Commands.race(new Shoot(shooter, -0.95),
+        Commands.sequence(Commands.waitSeconds(0.55),
+            Commands.race(new RunIntake(intake, 0.5, IntakeConstants.kickupSpeed), Commands.waitSeconds(0.25))));
+
+    var armUp = Commands.sequence(
+        Commands.runOnce(arm::armUp, arm),
+        Commands.waitSeconds(0.75));
+
+    var armDown = Commands.runOnce(arm::armDown, arm);
+
+    // var armDown = Commands.race(
+    // new MoveArm(arm, () -> ArmConstants.lowerArmSpeed),
+    // Commands.waitSeconds(1.5));
+
+    var ampShoot = Commands.race(
+        Commands.parallel(
+            new Shoot(shooter, ShooterConstants.shooterSpeed),
+            new RunIntake(intake, 0.5, IntakeConstants.kickupSpeed)),
+        Commands.waitSeconds(0.4));
+
+    var defenceShoot = Commands.parallel(
+        new Shoot(shooter, -0.15),
+        new RunIntake(intake, 0.5, IntakeConstants.kickupSpeed));
+
+    var stopDefence = Commands.parallel(
+        new Shoot(shooter, 0),
+        new RunIntake(intake, 0, 0));
+
+    NamedCommands.registerCommand("Intake",
+        new RunIntake(intake, IntakeConstants.intakeSpeed, -IntakeConstants.kickupSpeed));
+    NamedCommands.registerCommand("Stop Intake",
+        new RunIntake(intake, 0, 0));
+    NamedCommands.registerCommand("Shoot", shootComp);
+    NamedCommands.registerCommand("Amp Score", Commands.sequence(armUp, ampShoot,
+        armDown));
+    NamedCommands.registerCommand("Defence Shoot", defenceShoot);
+    NamedCommands.registerCommand("Stop Defence Shoot", stopDefence);
   }
 
   public void ledsOff() {
