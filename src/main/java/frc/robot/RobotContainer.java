@@ -92,7 +92,7 @@ public class RobotContainer {
     candle.setDefaultCommand(
         candle.getDefaultCommand(
             shooter::isReady,
-            () -> !beamBreak.get()));
+            this::hasNote));
 
     configureBindings();
   }
@@ -178,6 +178,10 @@ public class RobotContainer {
       return alliance.get() == Alliance.Blue;
     }
     return false;
+  }
+
+  public boolean hasNote() {
+    return !beamBreak.get();
   }
 
   public boolean getBeamBreak() {
