@@ -13,6 +13,7 @@ import frc.robot.commands.Drive;
 import frc.robot.commands.Rumble;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.HIDCommands.ControlCANdle;
 import frc.robot.commands.armCommands.MoveArm;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CANdleSystem;
@@ -126,6 +127,11 @@ public class RobotContainer {
         new MoveArm(arm,
             () -> getArmControl(driveStick.getRightTriggerAxis() -
                 driveStick.getLeftTriggerAxis())));
+
+    candle.setDefaultCommand(
+        new ControlCANdle(candle,
+            shooter::isReady,
+            () -> !beamBreak.get()));
 
     configureBindings();
   }
