@@ -76,7 +76,8 @@ public class RobotContainer {
     SignalLogger.enableAutoLogging(false);
 
     configureNamedCommands();
-    SmartDashboard.putData("Auto Mode", AutoBuilder.buildAutoChooser());
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Configure the trigger bindings
     drivebase.setDefaultCommand(
@@ -245,8 +246,8 @@ public class RobotContainer {
   }
 
   private void configureNamedCommands() {
-    var shootComp = Commands.race(new Shoot(shooter, -0.95),
-        Commands.sequence(Commands.waitSeconds(0.55),
+    var shootComp = Commands.race(new Shoot(shooter, -0.96),
+        Commands.sequence(Commands.waitSeconds(0.80),
             Commands.race(new RunIntake(intake, 0.5, IntakeConstants.kickupSpeed), Commands.waitSeconds(0.25))));
 
     var armUp = Commands.sequence(
