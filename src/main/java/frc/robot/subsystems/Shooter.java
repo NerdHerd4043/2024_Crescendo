@@ -43,6 +43,16 @@ public class Shooter extends SubsystemBase {
   public void stopShooter() {
     topShootMotor.stopMotor();
   }
+  
+  public void breakMode() {
+    topShootMotor.setIdleMode(IdleMode.kBrake);
+    bottomShootMotor.setIdleMode(IdleMode.kBrake);
+  }
+
+  public void coastMode() {
+    topShootMotor.setIdleMode(IdleMode.kCoast);
+    bottomShootMotor.setIdleMode(IdleMode.kCoast);
+  }
 
   @Override
   public void periodic() {

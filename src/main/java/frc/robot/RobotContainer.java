@@ -189,6 +189,14 @@ public class RobotContainer {
     return !beamBreak.get();
   }
 
+  public void setShootToBreak() {
+    shooter.breakMode();
+  }
+
+  public void setShootToCoast() {
+    shooter.coastMode();
+  }
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the
