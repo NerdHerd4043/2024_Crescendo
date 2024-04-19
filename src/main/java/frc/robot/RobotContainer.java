@@ -189,6 +189,14 @@ public class RobotContainer {
     return !beamBreak.get();
   }
 
+  public void setShootToBreak() {
+    shooter.breakMode();
+  }
+
+  public void setShootToCoast() {
+    shooter.coastMode();
+  }
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the
@@ -246,7 +254,8 @@ public class RobotContainer {
   }
 
   private void configureNamedCommands() {
-    var shootComp = Commands.race(new Shoot(shooter, -0.96),
+    var shootComp = Commands.race(
+        Commands.parallel(new Shoot(shooter, -0.96)),
         Commands.sequence(Commands.waitSeconds(0.80),
             Commands.race(new RunIntake(intake, 0.5, IntakeConstants.kickupSpeed), Commands.waitSeconds(0.25))));
 
