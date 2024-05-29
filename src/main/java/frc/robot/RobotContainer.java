@@ -258,9 +258,9 @@ public class RobotContainer {
         new Shoot(shooter, -0.96),
         Commands.sequence(
             new RunIntake(intake, 0.5, -IntakeConstants.kickupSpeed)
-                .withTimeout(0.8),
+                .withTimeout(0.81),
             new RunIntake(intake, 0.5, IntakeConstants.kickupSpeed)
-                .withTimeout(0.25)));
+                .withTimeout(0.24)));
 
     var armUp = Commands.sequence(
         Commands.runOnce(arm::armUp, arm),
