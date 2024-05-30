@@ -141,8 +141,8 @@ public class RobotContainer {
     r = r * r * drivebase.getMaxVelocity();
 
     // Convert to Cartesian coordinates
-    xy[0] = r * Math.cos(theta);
-    xy[1] = r * Math.sin(theta);
+    xy[0] = r * Math.cos(theta) * 0.1;
+    xy[1] = r * Math.sin(theta) * 0.1;
 
     return xy;
   }
@@ -162,7 +162,7 @@ public class RobotContainer {
   }
 
   private double scaleRotationAxis(double input) {
-    return deadband(squared(input), DriveConstants.deadband) * drivebase.getMaxAngleVelocity() * -0.6;
+    return deadband(squared(input), DriveConstants.deadband) * drivebase.getMaxAngleVelocity() * -0.1;
   }
 
   public void resetGyro() {
